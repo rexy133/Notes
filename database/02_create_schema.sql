@@ -54,7 +54,6 @@ CREATE TABLE IF NOT EXISTS app_users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    password_salt VARCHAR(255) NOT NULL,
     role_id INT NOT NULL REFERENCES app_roles(id),
     blocked BOOLEAN NOT NULL DEFAULT FALSE,
     registered_at TIMESTAMP NOT NULL DEFAULT NOW()
@@ -65,12 +64,11 @@ CREATE INDEX IF NOT EXISTS idx_app_users_role_id ON app_users(role_id);
 -- Начальный администратор для первого запуска.
 -- Логин: admin
 -- Пароль: admin123
--- Формат пароля: PBKDF2-HMAC-SHA256, 100000 итераций, хэш 32 байта, соль и хэш в Base64.
-INSERT INTO app_users (username, password_hash, password_salt, role_id, blocked)
+-- Пароль хранится в виде BCrypt-хэша.
+INSERT INTO app_users (username, password_hash, role_id, blocked)
 VALUES (
     'admin',
-    'Iia6gRh5tk3D81s8d21+P31Kf+oobQScYJcP0/0xgT8=',
-    'O1mXdSS4vAF7jr/if5VONA==',
+    '$2a$11$RHQJbQxFTwLc1KaH7WJigOLvFMVMNmOQR65egg3dqyJWfQvmxm0RG',
     (SELECT id FROM app_roles WHERE role_code = 'admin'),
     FALSE
 )
@@ -192,8 +190,8 @@ REVOKE ALL ON FUNCTION record_watcher_metric(VARCHAR, VARCHAR, NUMERIC, NUMERIC,
 
 -- Роль для регистрации и входа в приложение.
 GRANT SELECT (id, role_code, title) ON app_roles TO notes_auth;
-GRANT SELECT (id, username, password_hash, password_salt, role_id, blocked, registered_at) ON app_users TO notes_auth;
-GRANT INSERT (username, password_hash, password_salt, role_id, blocked) ON app_users TO notes_auth;
+GRANT SELECT (id, username, password_hash, role_id, blocked, registered_at) ON app_users TO notes_auth;
+GRANT INSERT (username, password_hash, role_id, blocked) ON app_users TO notes_auth;
 GRANT INSERT (account_id, account_name, action_code, details, object_name) ON audit_events TO notes_auth;
 GRANT USAGE, SELECT ON SEQUENCE app_users_id_seq, audit_events_id_seq TO notes_auth;
 
