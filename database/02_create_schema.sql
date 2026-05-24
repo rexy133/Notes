@@ -19,8 +19,8 @@ BEGIN
         CREATE ROLE notes_admin LOGIN PASSWORD 'notes_admin_password';
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'notes_statistician') THEN
-        CREATE ROLE notes_statistician LOGIN PASSWORD 'notes_statistician_password';
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'notes_analyst') THEN
+        CREATE ROLE notes_analyst LOGIN PASSWORD 'notes_analyst_password';
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'notes_watcher') THEN
@@ -31,7 +31,7 @@ END $$;
 ALTER ROLE notes_auth LOGIN PASSWORD 'notes_auth_password';
 ALTER ROLE notes_user LOGIN PASSWORD 'notes_user_password';
 ALTER ROLE notes_admin LOGIN PASSWORD 'notes_admin_password';
-ALTER ROLE notes_statistician LOGIN PASSWORD 'notes_statistician_password';
+ALTER ROLE notes_analyst LOGIN PASSWORD 'notes_analyst_password';
 ALTER ROLE notes_watcher LOGIN PASSWORD 'notes_watcher_password';
 
 -- Роли и учетные записи приложения.
@@ -46,7 +46,7 @@ INSERT INTO app_roles (role_code, title)
 VALUES
     ('user', 'Пользователь'),
     ('admin', 'Администратор'),
-    ('statistician', 'Статистик')
+    ('analyst', 'Аналитик')
 ON CONFLICT (role_code) DO UPDATE
 SET title = EXCLUDED.title;
 
@@ -182,7 +182,7 @@ $$;
 -- Права доступа.
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-GRANT USAGE ON SCHEMA public TO notes_auth, notes_user, notes_admin, notes_statistician, notes_watcher;
+GRANT USAGE ON SCHEMA public TO notes_auth, notes_user, notes_admin, notes_analyst, notes_watcher;
 
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM PUBLIC;
@@ -211,13 +211,13 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON watcher_devices TO notes_admin;
 GRANT SELECT, INSERT, UPDATE, DELETE ON device_metrics TO notes_admin;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO notes_admin;
 
--- Роль для просмотра статистики.
-GRANT SELECT (id, role_code, title) ON app_roles TO notes_statistician;
-GRANT SELECT (id, username, role_id, blocked, registered_at) ON app_users TO notes_statistician;
-GRANT SELECT, INSERT, UPDATE, DELETE ON watcher_devices TO notes_statistician;
-GRANT SELECT ON device_metrics TO notes_statistician;
-GRANT SELECT, INSERT ON audit_events TO notes_statistician;
-GRANT USAGE, SELECT ON SEQUENCE watcher_devices_id_seq, audit_events_id_seq TO notes_statistician;
+-- Роль аналитика для просмотра статистики.
+GRANT SELECT (id, role_code, title) ON app_roles TO notes_analyst;
+GRANT SELECT (id, username, role_id, blocked, registered_at) ON app_users TO notes_analyst;
+GRANT SELECT, INSERT, UPDATE, DELETE ON watcher_devices TO notes_analyst;
+GRANT SELECT ON device_metrics TO notes_analyst;
+GRANT SELECT, INSERT ON audit_events TO notes_analyst;
+GRANT USAGE, SELECT ON SEQUENCE watcher_devices_id_seq, audit_events_id_seq TO notes_analyst;
 
 -- Роль watcher-а. Агент может только передавать метрики через функцию.
 GRANT EXECUTE ON FUNCTION record_watcher_metric(VARCHAR, VARCHAR, NUMERIC, NUMERIC, NUMERIC) TO notes_watcher;

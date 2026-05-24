@@ -12,7 +12,7 @@ namespace NotesApp.Services
         private const string _authConnectionName = "AuthDb";
         private const string _userConnectionName = "UserDb";
         private const string _adminConnectionName = "AdminDb";
-        private const string _statisticianConnectionName = "StatisticianDb";
+        private const string _analystConnectionName = "AnalystDb";
 
         /// <summary>
         /// Открывает подключение для входа и регистрации.
@@ -66,9 +66,9 @@ namespace NotesApp.Services
                 return _adminConnectionName;
             }
 
-            if (string.Equals(roleCode, "statistician", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(roleCode, "analyst", StringComparison.OrdinalIgnoreCase))
             {
-                return _statisticianConnectionName;
+                return _analystConnectionName;
             }
 
             if (string.Equals(roleCode, "user", StringComparison.OrdinalIgnoreCase))

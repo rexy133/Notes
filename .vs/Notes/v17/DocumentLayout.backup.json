@@ -3,19 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|c:\\users\\lilapupa\\desktop\\notes\\notes\\notesapp\\services\\useradminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\services\\useradminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|c:\\users\\lilapupa\\desktop\\notes\\notes\\notesapp\\services\\noteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\services\\noteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|c:\\users\\lilapupa\\desktop\\notes\\notes\\notesapp\\models\\noterecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\models\\noterecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|c:\\users\\lilapupa\\desktop\\notes\\notes\\notesapp\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -23,24 +15,36 @@
       "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\services\\dbconnectionprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\models\\authresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\models\\authresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|c:\\users\\lilapupa\\desktop\\notes\\notes\\notesapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\security\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\security\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{99F0DE8D-6BE7-4606-A6E6-DF08500AFA2E}|Watcher\\Watcher.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\watcher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{99F0DE8D-6BE7-4606-A6E6-DF08500AFA2E}|Watcher\\Watcher.csproj|solutionrelative:watcher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{36DCCA72-1E7A-4920-A71E-3F0E71A2E362}|Installer\\Installer.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36DCCA72-1E7A-4920-A71E-3F0E71A2E362}|Installer\\Installer.csproj|solutionrelative:installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{99F0DE8D-6BE7-4606-A6E6-DF08500AFA2E}|Watcher\\Watcher.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\watcher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{99F0DE8D-6BE7-4606-A6E6-DF08500AFA2E}|Watcher\\Watcher.csproj|solutionrelative:watcher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\security\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\security\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\models\\authresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\models\\authresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\services\\noteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\services\\noteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\notesapp\\models\\noterecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{908CE310-266C-40FA-B251-BF9DC8E09761}|NotesApp\\NotesApp.csproj|solutionrelative:notesapp\\models\\noterecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,7 +54,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,46 +70,57 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
+              "Title": "UserAdminService.cs",
+              "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\UserAdminService.cs",
+              "RelativeDocumentMoniker": "NotesApp\\Services\\UserAdminService.cs",
+              "ToolTip": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\UserAdminService.cs",
+              "RelativeToolTip": "NotesApp\\Services\\UserAdminService.cs",
+              "ViewState": "AgIAAIYAAAAAAAAAAAAwwPUAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-24T08:54:10.301Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "NoteRecord.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Models\\NoteRecord.cs",
               "RelativeDocumentMoniker": "NotesApp\\Models\\NoteRecord.cs",
               "ToolTip": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Models\\NoteRecord.cs",
               "RelativeToolTip": "NotesApp\\Models\\NoteRecord.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-24T06:49:21.326Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-24T06:49:21.326Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 9,
               "Title": "NoteService.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\NoteService.cs",
               "RelativeDocumentMoniker": "NotesApp\\Services\\NoteService.cs",
               "ToolTip": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\NoteService.cs",
               "RelativeToolTip": "NotesApp\\Services\\NoteService.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-24T06:49:16.922Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-24T06:49:16.922Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "AuthService.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "NotesApp\\Services\\AuthService.cs",
               "ToolTip": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\AuthService.cs",
               "RelativeToolTip": "NotesApp\\Services\\AuthService.cs",
-              "ViewState": "AgIAAFYAAAAAAAAAAAAwwNoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-24T05:08:38.32Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "AuthResult.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Models\\AuthResult.cs",
               "RelativeDocumentMoniker": "NotesApp\\Models\\AuthResult.cs",
@@ -117,7 +132,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "AppUser.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Models\\AppUser.cs",
               "RelativeDocumentMoniker": "NotesApp\\Models\\AppUser.cs",
@@ -129,7 +144,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "PasswordHasher.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Security\\PasswordHasher.cs",
               "RelativeDocumentMoniker": "NotesApp\\Security\\PasswordHasher.cs",
@@ -141,19 +156,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "DbConnectionProvider.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\DbConnectionProvider.cs",
               "RelativeDocumentMoniker": "NotesApp\\Services\\DbConnectionProvider.cs",
               "ToolTip": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Services\\DbConnectionProvider.cs",
               "RelativeToolTip": "NotesApp\\Services\\DbConnectionProvider.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAnwCQAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-24T03:47:40.74Z"
+              "WhenOpened": "2026-05-24T03:47:40.74Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\Installer\\Program.cs",
               "RelativeDocumentMoniker": "Installer\\Program.cs",
@@ -165,7 +181,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\Watcher\\Program.cs",
               "RelativeDocumentMoniker": "Watcher\\Program.cs",
@@ -177,13 +193,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Program.cs",
               "RelativeDocumentMoniker": "NotesApp\\Program.cs",
               "ToolTip": "C:\\Users\\lilapupa\\Desktop\\Notes\\Notes\\NotesApp\\Program.cs",
               "RelativeToolTip": "NotesApp\\Program.cs",
-              "ViewState": "AgIAAPoAAAAAAAAAAAAWwGQAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAAJIBAAAAAAAAAAAhwPwAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-23T13:07:43.576Z",
               "EditorCaption": ""

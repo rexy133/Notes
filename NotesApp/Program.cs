@@ -18,6 +18,7 @@ namespace NotesApp
             DbConnectionProvider connectionProvider = new DbConnectionProvider();
             AuthService authService = new AuthService(connectionProvider);
             NoteService noteService = new NoteService(connectionProvider);
+            UserAdminService userAdminService = new UserAdminService(connectionProvider);
             AppUser currentUser = null;
 
             while (true)
@@ -48,7 +49,7 @@ namespace NotesApp
                 }
                 else
                 {
-                    currentUser = RunCommandConsole(currentUser, noteService);
+                    currentUser = RunCommandConsole(currentUser, noteService, userAdminService);
                 }
             }
         }
@@ -98,7 +99,10 @@ namespace NotesApp
             Console.Write("Выберите действие: ");
         }
 
-        private static AppUser RunCommandConsole(AppUser currentUser, NoteService noteService)
+        private static AppUser RunCommandConsole(
+            AppUser currentUser,
+            NoteService noteService,
+            UserAdminService userAdminService)
         {
             Console.Clear();
             Console.WriteLine("Вход выполнен.");
@@ -121,7 +125,7 @@ namespace NotesApp
 
                 if (command.Equals("help", StringComparison.OrdinalIgnoreCase))
                 {
-                    PrintHelp();
+                    PrintHelp(currentUser);
                 }
                 else if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
@@ -133,21 +137,13 @@ namespace NotesApp
                     Pause();
                     return null;
                 }
-                else if (command.StartsWith("note add ", StringComparison.OrdinalIgnoreCase))
+                else if (IsNoteCommand(command))
                 {
-                    AddNote(currentUser, noteService, command);
+                    RunNoteCommand(currentUser, noteService, command);
                 }
-                else if (command.Equals("note list", StringComparison.OrdinalIgnoreCase))
+                else if (IsAdminCommand(command))
                 {
-                    PrintNotes(currentUser, noteService);
-                }
-                else if (command.StartsWith("note delete ", StringComparison.OrdinalIgnoreCase))
-                {
-                    DeleteNote(currentUser, noteService, command);
-                }
-                else if (command.StartsWith("note edit ", StringComparison.OrdinalIgnoreCase))
-                {
-                    EditNote(currentUser, noteService, command);
+                    RunAdminCommand(currentUser, userAdminService, command);
                 }
                 else
                 {
@@ -158,22 +154,109 @@ namespace NotesApp
             }
         }
 
-        private static void PrintHelp()
+        private static void PrintHelp(AppUser user)
         {
             Console.WriteLine();
             Console.WriteLine("Доступные команды:");
-            Console.WriteLine("help                         показать список команд");
-            Console.WriteLine("note add <текст>             добавить заметку");
-            Console.WriteLine("note list                    показать свои заметки");
-            Console.WriteLine("note edit <id> <новый текст> изменить заметку");
-            Console.WriteLine("note delete <id>             удалить заметку");
-            Console.WriteLine("logout                       выйти из учетной записи");
-            Console.WriteLine("exit                         закрыть приложение");
+            Console.WriteLine("help                                показать список команд");
+            Console.WriteLine("logout                              выйти из учетной записи");
+            Console.WriteLine("exit                                закрыть приложение");
+
+            if (CanUseNotes(user))
+            {
+                Console.WriteLine("addNote <текст>                     добавить заметку");
+                Console.WriteLine("listNotes                           показать свои заметки");
+                Console.WriteLine("editNote <id> <новый текст>         изменить заметку");
+                Console.WriteLine("deleteNote <id>                     удалить заметку");
+            }
+
+            if (IsAdmin(user))
+            {
+                Console.WriteLine("createUser <логин> <пароль> <роль>  создать пользователя");
+                Console.WriteLine("listUsers                           показать пользователей");
+                Console.WriteLine("blockUser <логин>                   заблокировать пользователя");
+                Console.WriteLine("unblockUser <логин>                 разблокировать пользователя");
+                Console.WriteLine("deleteUser <логин>                  удалить пользователя");
+                Console.WriteLine("Роли для createUser: user, admin, analyst");
+            }
+        }
+
+        private static bool IsNoteCommand(string command)
+        {
+            return command.StartsWith("addNote ", StringComparison.OrdinalIgnoreCase) ||
+                   command.Equals("listNotes", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("editNote ", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("deleteNote ", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsAdminCommand(string command)
+        {
+            return command.StartsWith("createUser ", StringComparison.OrdinalIgnoreCase) ||
+                   command.Equals("listUsers", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("blockUser ", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("unblockUser ", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("deleteUser ", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static void RunNoteCommand(AppUser currentUser, NoteService noteService, string command)
+        {
+            if (!CanUseNotes(currentUser))
+            {
+                Console.WriteLine("Команды заметок недоступны для вашей роли.");
+                return;
+            }
+
+            if (command.StartsWith("addNote ", StringComparison.OrdinalIgnoreCase))
+            {
+                AddNote(currentUser, noteService, command);
+            }
+            else if (command.Equals("listNotes", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintNotes(currentUser, noteService);
+            }
+            else if (command.StartsWith("deleteNote ", StringComparison.OrdinalIgnoreCase))
+            {
+                DeleteNote(currentUser, noteService, command);
+            }
+            else if (command.StartsWith("editNote ", StringComparison.OrdinalIgnoreCase))
+            {
+                EditNote(currentUser, noteService, command);
+            }
+        }
+
+        private static void RunAdminCommand(AppUser currentUser, UserAdminService userAdminService, string command)
+        {
+            if (!IsAdmin(currentUser))
+            {
+                Console.WriteLine("Команда доступна только администратору.");
+                return;
+            }
+
+            if (command.StartsWith("createUser ", StringComparison.OrdinalIgnoreCase))
+            {
+                CreateUser(currentUser, userAdminService, command);
+            }
+            else if (command.Equals("listUsers", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintUsers(currentUser, userAdminService);
+            }
+            else if (command.StartsWith("blockUser ", StringComparison.OrdinalIgnoreCase))
+            {
+                BlockUser(currentUser, userAdminService, command);
+            }
+            else if (command.StartsWith("unblockUser ", StringComparison.OrdinalIgnoreCase))
+            {
+                UnblockUser(currentUser, userAdminService, command);
+            }
+            else if (command.StartsWith("deleteUser ", StringComparison.OrdinalIgnoreCase))
+            {
+                DeleteUser(currentUser, userAdminService, command);
+            }
         }
 
         private static void AddNote(AppUser currentUser, NoteService noteService, string command)
         {
-            string content = command.Substring("note add ".Length).Trim();
+            string content = command.Substring("addNote ".Length).Trim();
 
             try
             {
@@ -211,7 +294,7 @@ namespace NotesApp
 
         private static void DeleteNote(AppUser currentUser, NoteService noteService, string command)
         {
-            string idText = command.Substring("note delete ".Length).Trim();
+            string idText = command.Substring("deleteNote ".Length).Trim();
 
             if (!int.TryParse(idText, out int noteId))
             {
@@ -232,12 +315,12 @@ namespace NotesApp
 
         private static void EditNote(AppUser currentUser, NoteService noteService, string command)
         {
-            string arguments = command.Substring("note edit ".Length).Trim();
+            string arguments = command.Substring("editNote ".Length).Trim();
             int separatorIndex = arguments.IndexOf(' ');
 
             if (separatorIndex <= 0)
             {
-                Console.WriteLine("Формат команды: note edit <id> <новый текст>");
+                Console.WriteLine("Формат команды: editNote <id> <новый текст>");
                 return;
             }
 
@@ -259,6 +342,70 @@ namespace NotesApp
             {
                 Console.WriteLine("Ошибка изменения заметки: " + ex.Message);
             }
+        }
+
+        private static void CreateUser(AppUser currentUser, UserAdminService userAdminService, string command)
+        {
+            string arguments = command.Substring("createUser ".Length).Trim();
+            string[] parts = arguments.Split(new[] { ' ' }, 3);
+
+            if (parts.Length < 3)
+            {
+                Console.WriteLine("Формат команды: createUser <логин> <пароль> <роль>");
+                return;
+            }
+
+            AuthResult result = userAdminService.CreateUser(currentUser, parts[0], parts[1], parts[2]);
+            Console.WriteLine(result.Message);
+        }
+
+        private static void PrintUsers(AppUser currentUser, UserAdminService userAdminService)
+        {
+            try
+            {
+                List<AppUser> users = userAdminService.GetUsers(currentUser);
+
+                foreach (AppUser user in users)
+                {
+                    string status = user.Blocked ? "заблокирован" : "активен";
+                    Console.WriteLine(user.Id + " | " + user.Username + " | " + user.RoleCode + " | " + status);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка получения пользователей: " + ex.Message);
+            }
+        }
+
+        private static void BlockUser(AppUser currentUser, UserAdminService userAdminService, string command)
+        {
+            string username = command.Substring("blockUser ".Length).Trim();
+            AuthResult result = userAdminService.BlockUser(currentUser, username);
+            Console.WriteLine(result.Message);
+        }
+
+        private static void UnblockUser(AppUser currentUser, UserAdminService userAdminService, string command)
+        {
+            string username = command.Substring("unblockUser ".Length).Trim();
+            AuthResult result = userAdminService.UnblockUser(currentUser, username);
+            Console.WriteLine(result.Message);
+        }
+
+        private static void DeleteUser(AppUser currentUser, UserAdminService userAdminService, string command)
+        {
+            string username = command.Substring("deleteUser ".Length).Trim();
+            AuthResult result = userAdminService.DeleteUser(currentUser, username);
+            Console.WriteLine(result.Message);
+        }
+
+        private static bool CanUseNotes(AppUser user)
+        {
+            return user.RoleCode == "user" || user.RoleCode == "admin";
+        }
+
+        private static bool IsAdmin(AppUser user)
+        {
+            return user.RoleCode == "admin";
         }
 
         private static void ShowMessage(string message)

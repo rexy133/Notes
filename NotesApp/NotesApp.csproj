@@ -120,6 +120,7 @@
     <Compile Include="Services\AuthService.cs" />
     <Compile Include="Services\DbConnectionProvider.cs" />
     <Compile Include="Services\NoteService.cs" />
+    <Compile Include="Services\UserAdminService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
