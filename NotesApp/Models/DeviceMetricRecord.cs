@@ -1,10 +1,11 @@
 using System;
 
-namespace Watcher.Models
+namespace NotesApp.Models
 {
-    public class WatcherMetric
+    public class DeviceMetricRecord
     {
-        public string DeviceUid { get; set; }
+        public int Id { get; set; }
+        public int DeviceId { get; set; }
         public decimal CpuLoad { get; set; }
         public decimal RamLoad { get; set; }
         public decimal DiskLoad { get; set; }

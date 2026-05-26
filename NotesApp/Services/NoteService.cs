@@ -21,6 +21,18 @@ namespace NotesApp.Services
             "WHERE owner_id = @ownerId " +
             "ORDER BY created_at DESC, id DESC;";
 
+        private const string _findUserIdByUsernameSql =
+            "SELECT id " +
+            "FROM app_users " +
+            "WHERE username = @username;";
+
+        private const string _listUserNotesSql =
+            "SELECT n.id, n.owner_id, u.username, n.content, n.created_at, n.modified_at " +
+            "FROM notes n " +
+            "JOIN app_users u ON u.id = n.owner_id " +
+            "WHERE u.username = @username " +
+            "ORDER BY n.created_at DESC, n.id DESC;";
+
         private const string _deleteNoteSql =
             "DELETE FROM notes " +
             "WHERE id = @id AND owner_id = @ownerId;";
@@ -90,6 +102,40 @@ namespace NotesApp.Services
         }
 
         /// <summary>
+        /// Возвращает список заметок указанного пользователя для администратора.
+        /// </summary>
+        public List<NoteRecord> GetUserNotes(AppUser user, string username)
+        {
+            CheckAdmin(user);
+            CheckUsername(username);
+
+            List<NoteRecord> notes = new List<NoteRecord>();
+
+            using (NpgsqlConnection connection = _connectionProvider.OpenConnectionForRole(user.RoleCode))
+            {
+                if (!UserExists(connection, username))
+                {
+                    throw new InvalidOperationException("Пользователь не найден.");
+                }
+
+                using (NpgsqlCommand command = new NpgsqlCommand(_listUserNotesSql, connection))
+                {
+                    command.Parameters.AddWithValue("username", username);
+
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            notes.Add(ReadNoteWithOwner(reader));
+                        }
+                    }
+                }
+            }
+
+            return notes;
+        }
+
+        /// <summary>
         /// Удаляет заметку текущего пользователя.
         /// </summary>
         public bool DeleteNote(AppUser user, int noteId)
@@ -137,6 +183,19 @@ namespace NotesApp.Services
             };
         }
 
+        private static NoteRecord ReadNoteWithOwner(NpgsqlDataReader reader)
+        {
+            return new NoteRecord
+            {
+                Id = reader.GetInt32(0),
+                OwnerId = reader.GetInt32(1),
+                OwnerUsername = reader.GetString(2),
+                Content = reader.GetString(3),
+                CreatedAt = reader.GetDateTime(4),
+                ModifiedAt = reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5)
+            };
+        }
+
         private static void CheckUser(AppUser user)
         {
             if (user == null)
@@ -145,11 +204,39 @@ namespace NotesApp.Services
             }
         }
 
+        private static void CheckAdmin(AppUser user)
+        {
+            CheckUser(user);
+
+            if (user.RoleCode != "admin")
+            {
+                throw new InvalidOperationException("Команда доступна только администратору.");
+            }
+        }
+
+        private static void CheckUsername(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new InvalidOperationException("Логин пользователя не может быть пустым.");
+            }
+        }
+
         private static void CheckContent(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
             {
                 throw new InvalidOperationException("Текст заметки не может быть пустым.");
+            }
+        }
+
+        private static bool UserExists(NpgsqlConnection connection, string username)
+        {
+            using (NpgsqlCommand command = new NpgsqlCommand(_findUserIdByUsernameSql, connection))
+            {
+                command.Parameters.AddWithValue("username", username);
+                object result = command.ExecuteScalar();
+                return result != null && result != DBNull.Value;
             }
         }
     }

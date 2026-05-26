@@ -19,6 +19,13 @@ namespace NotesApp
             AuthService authService = new AuthService(connectionProvider);
             NoteService noteService = new NoteService(connectionProvider);
             UserAdminService userAdminService = new UserAdminService(connectionProvider);
+            AuditLogService auditLogService = new AuditLogService(connectionProvider);
+            WatcherReportService watcherReportService = new WatcherReportService(connectionProvider);
+            WatcherProcessService watcherProcessService = new WatcherProcessService();
+            AppVersionProvider appVersionProvider = new AppVersionProvider();
+            UpdateSettingsProvider updateSettingsProvider = new UpdateSettingsProvider();
+            GitHubUpdateService updateService = new GitHubUpdateService(updateSettingsProvider, appVersionProvider);
+            InstallerLauncherService installerLauncherService = new InstallerLauncherService();
             AppUser currentUser = null;
 
             while (true)
@@ -49,7 +56,16 @@ namespace NotesApp
                 }
                 else
                 {
-                    currentUser = RunCommandConsole(currentUser, noteService, userAdminService);
+                    currentUser = RunCommandConsole(
+                        currentUser,
+                        noteService,
+                        userAdminService,
+                        auditLogService,
+                        watcherReportService,
+                        watcherProcessService,
+                        appVersionProvider,
+                        updateService,
+                        installerLauncherService);
                 }
             }
         }
@@ -102,7 +118,13 @@ namespace NotesApp
         private static AppUser RunCommandConsole(
             AppUser currentUser,
             NoteService noteService,
-            UserAdminService userAdminService)
+            UserAdminService userAdminService,
+            AuditLogService auditLogService,
+            WatcherReportService watcherReportService,
+            WatcherProcessService watcherProcessService,
+            AppVersionProvider appVersionProvider,
+            GitHubUpdateService updateService,
+            InstallerLauncherService installerLauncherService)
         {
             Console.Clear();
             Console.WriteLine("Вход выполнен.");
@@ -127,6 +149,10 @@ namespace NotesApp
                 {
                     PrintHelp(currentUser);
                 }
+                else if (command.Equals("version", StringComparison.OrdinalIgnoreCase))
+                {
+                    PrintVersion(appVersionProvider);
+                }
                 else if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
                     Environment.Exit(0);
@@ -143,7 +169,15 @@ namespace NotesApp
                 }
                 else if (IsAdminCommand(command))
                 {
-                    RunAdminCommand(currentUser, userAdminService, command);
+                    RunAdminCommand(currentUser, userAdminService, noteService, auditLogService, command);
+                }
+                else if (IsWatcherCommand(command))
+                {
+                    RunWatcherCommand(currentUser, watcherReportService, watcherProcessService, command);
+                }
+                else if (IsUpdateCommand(command))
+                {
+                    RunUpdateCommand(currentUser, updateService, installerLauncherService, command);
                 }
                 else
                 {
@@ -159,6 +193,7 @@ namespace NotesApp
             Console.WriteLine();
             Console.WriteLine("Доступные команды:");
             Console.WriteLine("help                                показать список команд");
+            Console.WriteLine("version                             показать текущую версию");
             Console.WriteLine("logout                              выйти из учетной записи");
             Console.WriteLine("exit                                закрыть приложение");
 
@@ -174,10 +209,21 @@ namespace NotesApp
             {
                 Console.WriteLine("createUser <логин> <пароль> <роль>  создать пользователя");
                 Console.WriteLine("listUsers                           показать пользователей");
+                Console.WriteLine("listUserNotes <логин>               показать заметки пользователя");
+                Console.WriteLine("showLogs <количество>               показать последние записи журнала");
                 Console.WriteLine("blockUser <логин>                   заблокировать пользователя");
                 Console.WriteLine("unblockUser <логин>                 разблокировать пользователя");
                 Console.WriteLine("deleteUser <логин>                  удалить пользователя");
+                Console.WriteLine("updateCheck                         проверить обновление на GitHub");
+                Console.WriteLine("updateInstall                       скачать и установить обновление");
                 Console.WriteLine("Роли для createUser: user, admin, analyst");
+            }
+
+            if (CanViewWatcher(user))
+            {
+                Console.WriteLine("startWatcher [секунды]              запустить watcher");
+                Console.WriteLine("listDevices                         показать устройства watcher-а");
+                Console.WriteLine("showMetrics <deviceId>              показать последние метрики устройства");
             }
         }
 
@@ -193,9 +239,27 @@ namespace NotesApp
         {
             return command.StartsWith("createUser ", StringComparison.OrdinalIgnoreCase) ||
                    command.Equals("listUsers", StringComparison.OrdinalIgnoreCase) ||
+                   command.Equals("listUserNotes", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("listUserNotes ", StringComparison.OrdinalIgnoreCase) ||
+                   command.Equals("showLogs", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("showLogs ", StringComparison.OrdinalIgnoreCase) ||
                    command.StartsWith("blockUser ", StringComparison.OrdinalIgnoreCase) ||
                    command.StartsWith("unblockUser ", StringComparison.OrdinalIgnoreCase) ||
                    command.StartsWith("deleteUser ", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsWatcherCommand(string command)
+        {
+            return command.Equals("listDevices", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("showMetrics ", StringComparison.OrdinalIgnoreCase) ||
+                   command.Equals("startWatcher", StringComparison.OrdinalIgnoreCase) ||
+                   command.StartsWith("startWatcher ", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsUpdateCommand(string command)
+        {
+            return command.Equals("updateCheck", StringComparison.OrdinalIgnoreCase) ||
+                   command.Equals("updateInstall", StringComparison.OrdinalIgnoreCase);
         }
 
         private static void RunNoteCommand(AppUser currentUser, NoteService noteService, string command)
@@ -224,7 +288,12 @@ namespace NotesApp
             }
         }
 
-        private static void RunAdminCommand(AppUser currentUser, UserAdminService userAdminService, string command)
+        private static void RunAdminCommand(
+            AppUser currentUser,
+            UserAdminService userAdminService,
+            NoteService noteService,
+            AuditLogService auditLogService,
+            string command)
         {
             if (!IsAdmin(currentUser))
             {
@@ -240,6 +309,16 @@ namespace NotesApp
             {
                 PrintUsers(currentUser, userAdminService);
             }
+            else if (command.Equals("listUserNotes", StringComparison.OrdinalIgnoreCase) ||
+                     command.StartsWith("listUserNotes ", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintUserNotes(currentUser, noteService, command);
+            }
+            else if (command.Equals("showLogs", StringComparison.OrdinalIgnoreCase) ||
+                     command.StartsWith("showLogs ", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintAuditLogs(currentUser, auditLogService, command);
+            }
             else if (command.StartsWith("blockUser ", StringComparison.OrdinalIgnoreCase))
             {
                 BlockUser(currentUser, userAdminService, command);
@@ -251,6 +330,33 @@ namespace NotesApp
             else if (command.StartsWith("deleteUser ", StringComparison.OrdinalIgnoreCase))
             {
                 DeleteUser(currentUser, userAdminService, command);
+            }
+        }
+
+        private static void RunWatcherCommand(
+            AppUser currentUser,
+            WatcherReportService watcherReportService,
+            WatcherProcessService watcherProcessService,
+            string command)
+        {
+            if (!CanViewWatcher(currentUser))
+            {
+                Console.WriteLine("Команды watcher-а доступны только администратору и аналитику.");
+                return;
+            }
+
+            if (command.Equals("listDevices", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintWatcherDevices(currentUser, watcherReportService);
+            }
+            else if (command.StartsWith("showMetrics ", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintDeviceMetrics(currentUser, watcherReportService, command);
+            }
+            else if (command.Equals("startWatcher", StringComparison.OrdinalIgnoreCase) ||
+                     command.StartsWith("startWatcher ", StringComparison.OrdinalIgnoreCase))
+            {
+                StartWatcher(watcherProcessService, command);
             }
         }
 
@@ -377,6 +483,80 @@ namespace NotesApp
             }
         }
 
+        private static void PrintUserNotes(AppUser currentUser, NoteService noteService, string command)
+        {
+            string username = command.Length > "listUserNotes".Length
+                ? command.Substring("listUserNotes".Length).Trim()
+                : string.Empty;
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                Console.WriteLine("Формат команды: listUserNotes <логин>");
+                return;
+            }
+
+            try
+            {
+                List<NoteRecord> notes = noteService.GetUserNotes(currentUser, username);
+
+                if (notes.Count == 0)
+                {
+                    Console.WriteLine("У пользователя " + username + " пока нет заметок.");
+                    return;
+                }
+
+                foreach (NoteRecord note in notes)
+                {
+                    Console.WriteLine(note.Id + " | " + note.OwnerUsername + " | " + note.CreatedAt.ToString("yyyy-MM-dd HH:mm") + " | " + note.Content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка получения заметок пользователя: " + ex.Message);
+            }
+        }
+
+        private static void PrintAuditLogs(AppUser currentUser, AuditLogService auditLogService, string command)
+        {
+            string limitText = command.Length > "showLogs".Length
+                ? command.Substring("showLogs".Length).Trim()
+                : string.Empty;
+
+            if (!int.TryParse(limitText, out int limit) || limit <= 0)
+            {
+                Console.WriteLine("Формат команды: showLogs <количество>");
+                return;
+            }
+
+            try
+            {
+                List<AuditEventRecord> logs = auditLogService.GetLastLogs(currentUser, limit);
+
+                if (logs.Count == 0)
+                {
+                    Console.WriteLine("Журнал действий пока пуст.");
+                    return;
+                }
+
+                foreach (AuditEventRecord log in logs)
+                {
+                    string accountName = string.IsNullOrWhiteSpace(log.AccountName) ? "system" : log.AccountName;
+                    string objectName = string.IsNullOrWhiteSpace(log.ObjectName) ? "-" : log.ObjectName;
+
+                    Console.WriteLine(log.Id + " | " +
+                                      log.EventTime.ToString("yyyy-MM-dd HH:mm:ss") + " | " +
+                                      accountName + " | " +
+                                      log.ActionCode + " | " +
+                                      objectName + " | " +
+                                      log.Details);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка получения журнала действий: " + ex.Message);
+            }
+        }
+
         private static void BlockUser(AppUser currentUser, UserAdminService userAdminService, string command)
         {
             string username = command.Substring("blockUser ".Length).Trim();
@@ -398,6 +578,178 @@ namespace NotesApp
             Console.WriteLine(result.Message);
         }
 
+        private static void PrintWatcherDevices(AppUser currentUser, WatcherReportService watcherReportService)
+        {
+            try
+            {
+                List<WatcherDeviceRecord> devices = watcherReportService.GetDevices(currentUser);
+
+                if (devices.Count == 0)
+                {
+                    Console.WriteLine("Устройства watcher-а пока не найдены.");
+                    return;
+                }
+
+                foreach (WatcherDeviceRecord device in devices)
+                {
+                    string lastContact = device.LastContactAt.HasValue
+                        ? device.LastContactAt.Value.ToString("yyyy-MM-dd HH:mm")
+                        : "нет данных";
+
+                    Console.WriteLine(device.Id + " | " + device.DeviceUid + " | последний контакт: " + lastContact);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка получения устройств watcher-а: " + ex.Message);
+            }
+        }
+
+        private static void PrintDeviceMetrics(
+            AppUser currentUser,
+            WatcherReportService watcherReportService,
+            string command)
+        {
+            string idText = command.Substring("showMetrics ".Length).Trim();
+
+            if (!int.TryParse(idText, out int deviceId))
+            {
+                Console.WriteLine("Формат команды: showMetrics <deviceId>");
+                return;
+            }
+
+            try
+            {
+                List<DeviceMetricRecord> metrics = watcherReportService.GetMetrics(currentUser, deviceId);
+
+                if (metrics.Count == 0)
+                {
+                    Console.WriteLine("Метрики для устройства не найдены.");
+                    return;
+                }
+
+                foreach (DeviceMetricRecord metric in metrics)
+                {
+                    Console.WriteLine(metric.CapturedAt.ToString("yyyy-MM-dd HH:mm:ss") +
+                                      " | CPU: " + metric.CpuLoad.ToString("0.00") + "%" +
+                                      " | RAM: " + metric.RamLoad.ToString("0.00") + "%" +
+                                      " | HDD: " + metric.DiskLoad.ToString("0.00") + "%");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка получения метрик watcher-а: " + ex.Message);
+            }
+        }
+
+        private static void StartWatcher(WatcherProcessService watcherProcessService, string command)
+        {
+            int? intervalSeconds = null;
+
+            if (command.StartsWith("startWatcher ", StringComparison.OrdinalIgnoreCase))
+            {
+                string intervalText = command.Substring("startWatcher ".Length).Trim();
+
+                if (!int.TryParse(intervalText, out int parsedInterval) || parsedInterval <= 0)
+                {
+                    Console.WriteLine("Формат команды: startWatcher [секунды]");
+                    return;
+                }
+
+                intervalSeconds = parsedInterval;
+            }
+
+            try
+            {
+                string message = watcherProcessService.StartWatcher(intervalSeconds);
+                Console.WriteLine(message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка запуска watcher-а: " + ex.Message);
+            }
+        }
+
+        private static void PrintVersion(AppVersionProvider appVersionProvider)
+        {
+            Console.WriteLine("Текущая версия NotesApp: " + appVersionProvider.GetCurrentVersionText());
+        }
+
+        private static void RunUpdateCommand(
+            AppUser currentUser,
+            GitHubUpdateService updateService,
+            InstallerLauncherService installerLauncherService,
+            string command)
+        {
+            if (!IsAdmin(currentUser))
+            {
+                Console.WriteLine("Команды обновления доступны только администратору.");
+                return;
+            }
+
+            if (command.Equals("updateCheck", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintUpdateCheck(updateService);
+            }
+            else if (command.Equals("updateInstall", StringComparison.OrdinalIgnoreCase))
+            {
+                InstallUpdate(updateService, installerLauncherService);
+            }
+        }
+
+        private static void PrintUpdateCheck(GitHubUpdateService updateService)
+        {
+            try
+            {
+                UpdateInfo updateInfo = updateService.CheckForUpdate();
+
+                Console.WriteLine("Текущая версия: " + updateInfo.CurrentVersion);
+                Console.WriteLine("Последний релиз: " + updateInfo.LatestVersion);
+
+                if (!string.IsNullOrWhiteSpace(updateInfo.ReleaseUrl))
+                {
+                    Console.WriteLine("Ссылка: " + updateInfo.ReleaseUrl);
+                }
+
+                Console.WriteLine(updateInfo.HasUpdate
+                    ? "Доступно обновление."
+                    : "Установлена актуальная версия.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка проверки обновления: " + ex.Message);
+            }
+        }
+
+        private static void InstallUpdate(
+            GitHubUpdateService updateService,
+            InstallerLauncherService installerLauncherService)
+        {
+            try
+            {
+                UpdateInfo updateInfo = updateService.CheckForUpdate();
+
+                if (!updateInfo.HasUpdate)
+                {
+                    Console.WriteLine("Установлена актуальная версия.");
+                    return;
+                }
+
+                Console.WriteLine("Скачивание обновления " + updateInfo.LatestVersion + "...");
+                string archivePath = updateService.DownloadArchive(updateInfo);
+
+                Console.WriteLine("Запуск Installer...");
+                installerLauncherService.Launch(archivePath);
+
+                Console.WriteLine("NotesApp будет закрыт для установки обновления.");
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка установки обновления: " + ex.Message);
+            }
+        }
+
         private static bool CanUseNotes(AppUser user)
         {
             return user.RoleCode == "user" || user.RoleCode == "admin";
@@ -406,6 +758,11 @@ namespace NotesApp
         private static bool IsAdmin(AppUser user)
         {
             return user.RoleCode == "admin";
+        }
+
+        private static bool CanViewWatcher(AppUser user)
+        {
+            return user.RoleCode == "admin" || user.RoleCode == "analyst";
         }
 
         private static void ShowMessage(string message)

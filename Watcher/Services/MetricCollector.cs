@@ -14,7 +14,6 @@ namespace Watcher.Services
             return new WatcherMetric
             {
                 DeviceUid = computerName,
-                DisplayName = computerName,
                 CpuLoad = ReadCpuLoad(),
                 RamLoad = ReadRamLoad(),
                 DiskLoad = ReadDiskLoad(),

@@ -11,6 +11,8 @@ namespace NotesApp.Models
 
         public int OwnerId { get; set; }
 
+        public string OwnerUsername { get; set; }
+
         public string Content { get; set; }
 
         public DateTime CreatedAt { get; set; }

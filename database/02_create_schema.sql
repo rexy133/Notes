@@ -109,7 +109,6 @@ CREATE INDEX IF NOT EXISTS idx_audit_events_account_id ON audit_events(account_i
 CREATE TABLE IF NOT EXISTS watcher_devices (
     id SERIAL PRIMARY KEY,
     device_uid VARCHAR(100) NOT NULL UNIQUE,
-    display_name VARCHAR(100) NOT NULL,
     network_address VARCHAR(255) NULL,
     description TEXT NULL,
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
@@ -117,7 +116,6 @@ CREATE TABLE IF NOT EXISTS watcher_devices (
     added_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_watcher_devices_display_name ON watcher_devices(display_name);
 CREATE INDEX IF NOT EXISTS idx_watcher_devices_enabled ON watcher_devices(enabled);
 
 CREATE TABLE IF NOT EXISTS device_metrics (
@@ -137,9 +135,10 @@ ON device_metrics(device_id, captured_at DESC, id DESC);
 
 -- Функция приема метрик от watcher-а.
 
+DROP FUNCTION IF EXISTS record_watcher_metric(VARCHAR, VARCHAR, NUMERIC, NUMERIC, NUMERIC);
+
 CREATE OR REPLACE FUNCTION record_watcher_metric(
     p_device_uid VARCHAR,
-    p_display_name VARCHAR,
     p_cpu_load NUMERIC,
     p_ram_load NUMERIC,
     p_disk_load NUMERIC
@@ -156,16 +155,14 @@ BEGIN
         RAISE EXCEPTION 'device_uid is required';
     END IF;
 
-    INSERT INTO watcher_devices (device_uid, display_name, last_contact_at, enabled)
+    INSERT INTO watcher_devices (device_uid, last_contact_at, enabled)
     VALUES (
         btrim(p_device_uid),
-        COALESCE(NULLIF(btrim(p_display_name), ''), btrim(p_device_uid)),
         NOW(),
         TRUE
     )
     ON CONFLICT (device_uid) DO UPDATE
-    SET display_name = COALESCE(NULLIF(EXCLUDED.display_name, ''), watcher_devices.display_name),
-        last_contact_at = NOW(),
+    SET last_contact_at = NOW(),
         enabled = TRUE
     RETURNING id INTO v_device_id;
 
@@ -186,7 +183,7 @@ GRANT USAGE ON SCHEMA public TO notes_auth, notes_user, notes_admin, notes_analy
 
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM PUBLIC;
-REVOKE ALL ON FUNCTION record_watcher_metric(VARCHAR, VARCHAR, NUMERIC, NUMERIC, NUMERIC) FROM PUBLIC;
+REVOKE ALL ON FUNCTION record_watcher_metric(VARCHAR, NUMERIC, NUMERIC, NUMERIC) FROM PUBLIC;
 
 -- Роль для регистрации и входа в приложение.
 GRANT SELECT (id, role_code, title) ON app_roles TO notes_auth;
@@ -220,6 +217,6 @@ GRANT SELECT, INSERT ON audit_events TO notes_analyst;
 GRANT USAGE, SELECT ON SEQUENCE watcher_devices_id_seq, audit_events_id_seq TO notes_analyst;
 
 -- Роль watcher-а. Агент может только передавать метрики через функцию.
-GRANT EXECUTE ON FUNCTION record_watcher_metric(VARCHAR, VARCHAR, NUMERIC, NUMERIC, NUMERIC) TO notes_watcher;
+GRANT EXECUTE ON FUNCTION record_watcher_metric(VARCHAR, NUMERIC, NUMERIC, NUMERIC) TO notes_watcher;
 
 COMMIT;
