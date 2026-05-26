@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TestCases>
+  <Case>
+    <Name>new_patch_available</Name>
+    <CurrentVersion>1.0.0</CurrentVersion>
+    <ReleaseTag>v1.0.1</ReleaseTag>
+    <Expected>update</Expected>
+  </Case>
+  <Case>
+    <Name>same_version</Name>
+    <CurrentVersion>1.0.1</CurrentVersion>
+    <ReleaseTag>v1.0.1</ReleaseTag>
+    <Expected>skip</Expected>
+  </Case>
+  <Case>
+    <Name>current_is_newer</Name>
+    <CurrentVersion>1.1.0</CurrentVersion>
+    <ReleaseTag>v1.0.1</ReleaseTag>
+    <Expected>skip</Expected>
+  </Case>
+  <Case>
+    <Name>numeric_comparison</Name>
+    <CurrentVersion>1.2.0</CurrentVersion>
+    <ReleaseTag>v1.10.0</ReleaseTag>
+    <Expected>update</Expected>
+  </Case>
+  <Case>
+    <Name>uppercase_v_prefix</Name>
+    <CurrentVersion>1.0.0</CurrentVersion>
+    <ReleaseTag>V1.0.1</ReleaseTag>
+    <Expected>update</Expected>
+  </Case>
+  <Case>
+    <Name>release_candidate_suffix</Name>
+    <CurrentVersion>1.0.0</CurrentVersion>
+    <ReleaseTag>v1.0.1-beta</ReleaseTag>
+    <Expected>update</Expected>
+  </Case>
+  <Case>
+    <Name>invalid_tag</Name>
+    <CurrentVersion>1.0.0</CurrentVersion>
+    <ReleaseTag>release-latest</ReleaseTag>
+    <Expected>invalid_tag</Expected>
+  </Case>
+</TestCases>

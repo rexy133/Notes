@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TestCases>
+  <Case>
+    <Name>success_auth_role</Name>
+    <Host>127.0.0.1</Host>
+    <Port>5432</Port>
+    <Database>notes_test_db</Database>
+    <Username>notes_auth</Username>
+    <Password>notes_auth_password</Password>
+    <Expected>success</Expected>
+    <ExpectedSqlState></ExpectedSqlState>
+  </Case>
+  <Case>
+    <Name>wrong_password</Name>
+    <Host>127.0.0.1</Host>
+    <Port>5432</Port>
+    <Database>notes_test_db</Database>
+    <Username>notes_auth</Username>
+    <Password>bad_password</Password>
+    <Expected>postgres_error</Expected>
+    <ExpectedSqlState>28P01</ExpectedSqlState>
+  </Case>
+  <Case>
+    <Name>missing_database</Name>
+    <Host>127.0.0.1</Host>
+    <Port>5432</Port>
+    <Database>notes_missing_db</Database>
+    <Username>notes_auth</Username>
+    <Password>notes_auth_password</Password>
+    <Expected>postgres_error</Expected>
+    <ExpectedSqlState>3D000</ExpectedSqlState>
+  </Case>
+  <Case>
+    <Name>network_unavailable</Name>
+    <Host>192.0.2.1</Host>
+    <Port>5432</Port>
+    <Database>notes_test_db</Database>
+    <Username>notes_auth</Username>
+    <Password>notes_auth_password</Password>
+    <Expected>network_error</Expected>
+    <ExpectedSqlState></ExpectedSqlState>
+  </Case>
+</TestCases>

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watcher", "Watcher\Watcher.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{36DCCA72-1E7A-4920-A71E-3F0E71A2E362}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesTests", "NotesTests\NotesTests.csproj", "{6B795958-5242-40F4-9256-E5AA0B0F8707}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{36DCCA72-1E7A-4920-A71E-3F0E71A2E362}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36DCCA72-1E7A-4920-A71E-3F0E71A2E362}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36DCCA72-1E7A-4920-A71E-3F0E71A2E362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B795958-5242-40F4-9256-E5AA0B0F8707}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B795958-5242-40F4-9256-E5AA0B0F8707}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B795958-5242-40F4-9256-E5AA0B0F8707}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B795958-5242-40F4-9256-E5AA0B0F8707}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,6 +10,10 @@ namespace NotesApp
 {
     internal class Program
     {
+        /// <summary>
+        /// Точка входа консольного приложения Notes.
+        /// </summary>
+        /// <param name="args">Аргументы командной строки.</param>
         private static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -70,6 +74,10 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выполняет вход пользователя через консоль.
+        /// </summary>
+        /// <param name="authService">Сервис авторизации.</param>
         private static AppUser Login(AuthService authService)
         {
             Console.Clear();
@@ -88,6 +96,10 @@ namespace NotesApp
             return result.Success ? result.User : null;
         }
 
+        /// <summary>
+        /// Выполняет регистрацию пользователя через консоль.
+        /// </summary>
+        /// <param name="authService">Сервис авторизации.</param>
         private static void Register(AuthService authService)
         {
             Console.Clear();
@@ -104,6 +116,9 @@ namespace NotesApp
             ShowMessage(result.Message);
         }
 
+        /// <summary>
+        /// Выводит меню для неавторизованного пользователя.
+        /// </summary>
         private static void PrintGuestMenu()
         {
             Console.WriteLine("Notes");
@@ -115,6 +130,18 @@ namespace NotesApp
             Console.Write("Выберите действие: ");
         }
 
+        /// <summary>
+        /// Запускает командную консоль авторизованного пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
+        /// <param name="userAdminService">Сервис администрирования пользователей.</param>
+        /// <param name="auditLogService">Сервис чтения журнала действий.</param>
+        /// <param name="watcherReportService">Сервис отчетов watcher-а.</param>
+        /// <param name="watcherProcessService">Сервис запуска watcher-а.</param>
+        /// <param name="appVersionProvider">Поставщик версии приложения.</param>
+        /// <param name="updateService">Сервис обновлений.</param>
+        /// <param name="installerLauncherService">Сервис запуска установщика.</param>
         private static AppUser RunCommandConsole(
             AppUser currentUser,
             NoteService noteService,
@@ -188,6 +215,10 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выводит список доступных команд.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static void PrintHelp(AppUser user)
         {
             Console.WriteLine();
@@ -227,6 +258,10 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Проверяет, относится ли ввод к командам заметок.
+        /// </summary>
+        /// <param name="command">Команда пользователя.</param>
         private static bool IsNoteCommand(string command)
         {
             return command.StartsWith("addNote ", StringComparison.OrdinalIgnoreCase) ||
@@ -235,6 +270,10 @@ namespace NotesApp
                    command.StartsWith("deleteNote ", StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Проверяет, относится ли ввод к командам администратора.
+        /// </summary>
+        /// <param name="command">Команда пользователя.</param>
         private static bool IsAdminCommand(string command)
         {
             return command.StartsWith("createUser ", StringComparison.OrdinalIgnoreCase) ||
@@ -248,6 +287,10 @@ namespace NotesApp
                    command.StartsWith("deleteUser ", StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Проверяет, относится ли ввод к командам watcher-а.
+        /// </summary>
+        /// <param name="command">Команда пользователя.</param>
         private static bool IsWatcherCommand(string command)
         {
             return command.Equals("listDevices", StringComparison.OrdinalIgnoreCase) ||
@@ -256,12 +299,22 @@ namespace NotesApp
                    command.StartsWith("startWatcher ", StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Проверяет, относится ли ввод к командам обновления.
+        /// </summary>
+        /// <param name="command">Команда пользователя.</param>
         private static bool IsUpdateCommand(string command)
         {
             return command.Equals("updateCheck", StringComparison.OrdinalIgnoreCase) ||
                    command.Equals("updateInstall", StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Выполняет команду работы с заметками.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void RunNoteCommand(AppUser currentUser, NoteService noteService, string command)
         {
             if (!CanUseNotes(currentUser))
@@ -288,6 +341,14 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выполняет административную команду.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="userAdminService">Сервис администрирования пользователей.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
+        /// <param name="auditLogService">Сервис чтения журнала действий.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void RunAdminCommand(
             AppUser currentUser,
             UserAdminService userAdminService,
@@ -333,6 +394,13 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выполняет команду watcher-а.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="watcherReportService">Сервис отчетов watcher-а.</param>
+        /// <param name="watcherProcessService">Сервис запуска watcher-а.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void RunWatcherCommand(
             AppUser currentUser,
             WatcherReportService watcherReportService,
@@ -360,6 +428,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Добавляет заметку текущего пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void AddNote(AppUser currentUser, NoteService noteService, string command)
         {
             string content = command.Substring("addNote ".Length).Trim();
@@ -375,6 +449,11 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выводит заметки текущего пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
         private static void PrintNotes(AppUser currentUser, NoteService noteService)
         {
             try
@@ -398,6 +477,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Удаляет заметку текущего пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void DeleteNote(AppUser currentUser, NoteService noteService, string command)
         {
             string idText = command.Substring("deleteNote ".Length).Trim();
@@ -419,6 +504,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Изменяет заметку текущего пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void EditNote(AppUser currentUser, NoteService noteService, string command)
         {
             string arguments = command.Substring("editNote ".Length).Trim();
@@ -450,6 +541,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Создает пользователя по административной команде.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="userAdminService">Сервис администрирования пользователей.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void CreateUser(AppUser currentUser, UserAdminService userAdminService, string command)
         {
             string arguments = command.Substring("createUser ".Length).Trim();
@@ -465,6 +562,11 @@ namespace NotesApp
             Console.WriteLine(result.Message);
         }
 
+        /// <summary>
+        /// Выводит список пользователей.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="userAdminService">Сервис администрирования пользователей.</param>
         private static void PrintUsers(AppUser currentUser, UserAdminService userAdminService)
         {
             try
@@ -483,6 +585,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выводит заметки указанного пользователя для администратора.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="noteService">Сервис работы с заметками.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void PrintUserNotes(AppUser currentUser, NoteService noteService, string command)
         {
             string username = command.Length > "listUserNotes".Length
@@ -516,6 +624,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выводит последние записи журнала действий.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="auditLogService">Сервис чтения журнала действий.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void PrintAuditLogs(AppUser currentUser, AuditLogService auditLogService, string command)
         {
             string limitText = command.Length > "showLogs".Length
@@ -557,6 +671,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Блокирует пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="userAdminService">Сервис администрирования пользователей.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void BlockUser(AppUser currentUser, UserAdminService userAdminService, string command)
         {
             string username = command.Substring("blockUser ".Length).Trim();
@@ -564,6 +684,12 @@ namespace NotesApp
             Console.WriteLine(result.Message);
         }
 
+        /// <summary>
+        /// Разблокирует пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="userAdminService">Сервис администрирования пользователей.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void UnblockUser(AppUser currentUser, UserAdminService userAdminService, string command)
         {
             string username = command.Substring("unblockUser ".Length).Trim();
@@ -571,6 +697,12 @@ namespace NotesApp
             Console.WriteLine(result.Message);
         }
 
+        /// <summary>
+        /// Удаляет пользователя.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="userAdminService">Сервис администрирования пользователей.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void DeleteUser(AppUser currentUser, UserAdminService userAdminService, string command)
         {
             string username = command.Substring("deleteUser ".Length).Trim();
@@ -578,6 +710,11 @@ namespace NotesApp
             Console.WriteLine(result.Message);
         }
 
+        /// <summary>
+        /// Выводит список устройств watcher-а.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="watcherReportService">Сервис отчетов watcher-а.</param>
         private static void PrintWatcherDevices(AppUser currentUser, WatcherReportService watcherReportService)
         {
             try
@@ -605,6 +742,12 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выводит последние метрики устройства watcher-а.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="watcherReportService">Сервис отчетов watcher-а.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void PrintDeviceMetrics(
             AppUser currentUser,
             WatcherReportService watcherReportService,
@@ -642,6 +785,11 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Запускает watcher из консольной команды.
+        /// </summary>
+        /// <param name="watcherProcessService">Сервис запуска watcher-а.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void StartWatcher(WatcherProcessService watcherProcessService, string command)
         {
             int? intervalSeconds = null;
@@ -670,11 +818,22 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выводит текущую версию приложения.
+        /// </summary>
+        /// <param name="appVersionProvider">Поставщик версии приложения.</param>
         private static void PrintVersion(AppVersionProvider appVersionProvider)
         {
             Console.WriteLine("Текущая версия NotesApp: " + appVersionProvider.GetCurrentVersionText());
         }
 
+        /// <summary>
+        /// Выполняет команду обновления приложения.
+        /// </summary>
+        /// <param name="currentUser">Текущий пользователь приложения.</param>
+        /// <param name="updateService">Сервис обновлений.</param>
+        /// <param name="installerLauncherService">Сервис запуска установщика.</param>
+        /// <param name="command">Команда пользователя.</param>
         private static void RunUpdateCommand(
             AppUser currentUser,
             GitHubUpdateService updateService,
@@ -697,6 +856,10 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Выводит результат проверки обновления.
+        /// </summary>
+        /// <param name="updateService">Сервис обновлений.</param>
         private static void PrintUpdateCheck(GitHubUpdateService updateService)
         {
             try
@@ -721,6 +884,11 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Скачивает и запускает установку обновления.
+        /// </summary>
+        /// <param name="updateService">Сервис обновлений.</param>
+        /// <param name="installerLauncherService">Сервис запуска установщика.</param>
         private static void InstallUpdate(
             GitHubUpdateService updateService,
             InstallerLauncherService installerLauncherService)
@@ -750,21 +918,37 @@ namespace NotesApp
             }
         }
 
+        /// <summary>
+        /// Проверяет доступ пользователя к командам заметок.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static bool CanUseNotes(AppUser user)
         {
             return user.RoleCode == "user" || user.RoleCode == "admin";
         }
 
+        /// <summary>
+        /// Проверяет, является ли пользователь администратором.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static bool IsAdmin(AppUser user)
         {
             return user.RoleCode == "admin";
         }
 
+        /// <summary>
+        /// Проверяет доступ пользователя к командам watcher-а.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static bool CanViewWatcher(AppUser user)
         {
             return user.RoleCode == "admin" || user.RoleCode == "analyst";
         }
 
+        /// <summary>
+        /// Показывает сообщение и ожидает нажатия Enter.
+        /// </summary>
+        /// <param name="message">Сообщение для вывода.</param>
         private static void ShowMessage(string message)
         {
             Console.WriteLine();
@@ -774,6 +958,9 @@ namespace NotesApp
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Ожидает нажатия Enter.
+        /// </summary>
         private static void Pause()
         {
             Console.WriteLine();

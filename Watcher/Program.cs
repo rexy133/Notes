@@ -14,6 +14,10 @@ namespace Watcher
         private const int _defaultIntervalSeconds = 60;
         private const int _minimumIntervalSeconds = 5;
 
+        /// <summary>
+        /// Запускает watcher и периодически отправляет метрики в базу данных.
+        /// </summary>
+        /// <param name="args">Аргументы командной строки.</param>
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -49,6 +53,10 @@ namespace Watcher
             }
         }
 
+        /// <summary>
+        /// Читает интервал отправки метрик из аргументов или конфигурации.
+        /// </summary>
+        /// <param name="args">Аргументы командной строки.</param>
         private static int ReadIntervalSeconds(string[] args)
         {
             if (args != null && args.Length > 0 && int.TryParse(args[0], out int intervalFromArgs))
@@ -65,11 +73,18 @@ namespace Watcher
             return _defaultIntervalSeconds;
         }
 
+        /// <summary>
+        /// Проверяет минимальное значение интервала отправки.
+        /// </summary>
+        /// <param name="intervalSeconds">Интервал в секундах.</param>
         private static int NormalizeInterval(int intervalSeconds)
         {
             return intervalSeconds < _minimumIntervalSeconds ? _minimumIntervalSeconds : intervalSeconds;
         }
 
+        /// <summary>
+        /// Читает строку подключения watcher-а из App.config.
+        /// </summary>
         private static string ReadConnectionString()
         {
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings[_connectionName];
@@ -81,6 +96,10 @@ namespace Watcher
             return settings.ConnectionString;
         }
 
+        /// <summary>
+        /// Выводит собранную метрику в консоль.
+        /// </summary>
+        /// <param name="metric">Метрика watcher-а.</param>
         private static void PrintMetric(WatcherMetric metric)
         {
             Console.WriteLine(metric.CapturedAt.ToString("yyyy-MM-dd HH:mm:ss") +

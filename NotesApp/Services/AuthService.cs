@@ -29,6 +29,10 @@ namespace NotesApp.Services
 
         private readonly DbConnectionProvider _connectionProvider;
 
+        /// <summary>
+        /// Создает сервис авторизации.
+        /// </summary>
+        /// <param name="connectionProvider">Поставщик подключений к базе данных.</param>
         public AuthService(DbConnectionProvider connectionProvider)
         {
             _connectionProvider = connectionProvider;
@@ -37,6 +41,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Регистрирует нового обычного пользователя.
         /// </summary>
+        /// <param name="username">Логин нового пользователя.</param>
+        /// <param name="password">Пароль нового пользователя.</param>
         public AuthResult Register(string username, string password)
         {
             AuthResult validationResult = ValidateCredentials(username, password);
@@ -78,6 +84,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Выполняет вход пользователя по логину и паролю.
         /// </summary>
+        /// <param name="username">Логин пользователя.</param>
+        /// <param name="password">Пароль пользователя.</param>
         public AuthResult Login(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
@@ -120,6 +128,11 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет логин и пароль перед регистрацией.
+        /// </summary>
+        /// <param name="username">Логин пользователя.</param>
+        /// <param name="password">Пароль пользователя.</param>
         private static AuthResult ValidateCredentials(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -145,6 +158,12 @@ namespace NotesApp.Services
             return Success("Данные корректны.", null);
         }
 
+        /// <summary>
+        /// Ищет пользователя по логину и возвращает его хэш пароля.
+        /// </summary>
+        /// <param name="connection">Открытое подключение к базе данных.</param>
+        /// <param name="username">Логин пользователя.</param>
+        /// <param name="passwordHash">Хэш пароля найденного пользователя.</param>
         private static AppUser FindUser(NpgsqlConnection connection, string username, out string passwordHash)
         {
             passwordHash = null;
@@ -174,6 +193,12 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Создает обычного пользователя в базе данных.
+        /// </summary>
+        /// <param name="connection">Открытое подключение к базе данных.</param>
+        /// <param name="username">Логин пользователя.</param>
+        /// <param name="passwordHash">Хэш пароля пользователя.</param>
         private static int CreateUser(NpgsqlConnection connection, string username, string passwordHash)
         {
             using (NpgsqlCommand command = new NpgsqlCommand(_insertUserSql, connection))
@@ -186,6 +211,15 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Сохраняет событие аудита авторизации.
+        /// </summary>
+        /// <param name="connection">Открытое подключение к базе данных.</param>
+        /// <param name="accountId">Идентификатор учетной записи.</param>
+        /// <param name="accountName">Логин учетной записи.</param>
+        /// <param name="actionCode">Код действия.</param>
+        /// <param name="details">Описание события.</param>
+        /// <param name="objectName">Название объекта события.</param>
         private static void SaveAuditEvent(
             NpgsqlConnection connection,
             int? accountId,
@@ -206,6 +240,11 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Формирует успешный результат авторизации.
+        /// </summary>
+        /// <param name="message">Сообщение для пользователя.</param>
+        /// <param name="user">Пользователь приложения.</param>
         private static AuthResult Success(string message, AppUser user)
         {
             return new AuthResult
@@ -216,6 +255,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Формирует неуспешный результат авторизации.
+        /// </summary>
+        /// <param name="message">Сообщение об ошибке.</param>
         private static AuthResult Fail(string message)
         {
             return new AuthResult

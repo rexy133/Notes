@@ -5,10 +5,17 @@ using System.IO;
 
 namespace NotesApp.Services
 {
+    /// <summary>
+    /// Запускает отдельный процесс Watcher.exe.
+    /// </summary>
     public class WatcherProcessService
     {
         private const string _watcherExeName = "Watcher.exe";
 
+        /// <summary>
+        /// Запускает watcher с указанным интервалом отправки метрик.
+        /// </summary>
+        /// <param name="intervalSeconds">Интервал отправки в секундах.</param>
         public string StartWatcher(int? intervalSeconds)
         {
             string watcherPath = FindWatcherPath();
@@ -34,6 +41,9 @@ namespace NotesApp.Services
             return "Watcher запущен.";
         }
 
+        /// <summary>
+        /// Ищет Watcher.exe рядом с приложением или в папках сборки.
+        /// </summary>
         private static string FindWatcherPath()
         {
             List<string> paths = GetPossibleWatcherPaths();
@@ -49,6 +59,9 @@ namespace NotesApp.Services
             throw new FileNotFoundException("Watcher.exe не найден. Сначала соберите проект Watcher.");
         }
 
+        /// <summary>
+        /// Возвращает возможные пути к Watcher.exe.
+        /// </summary>
         private static List<string> GetPossibleWatcherPaths()
         {
             string applicationFolder = AppDomain.CurrentDomain.BaseDirectory;
@@ -62,6 +75,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Проверяет, запущен ли watcher из указанного пути.
+        /// </summary>
+        /// <param name="watcherPath">Полный путь к Watcher.exe.</param>
         private static bool IsWatcherRunning(string watcherPath)
         {
             string processName = Path.GetFileNameWithoutExtension(watcherPath);

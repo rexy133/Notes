@@ -7,6 +7,9 @@ namespace Watcher.Services
 {
     public class MetricCollector
     {
+        /// <summary>
+        /// Собирает текущие показатели устройства.
+        /// </summary>
         public WatcherMetric Collect()
         {
             string computerName = Environment.MachineName;
@@ -21,6 +24,9 @@ namespace Watcher.Services
             };
         }
 
+        /// <summary>
+        /// Считывает среднюю загрузку процессора.
+        /// </summary>
         private static decimal ReadCpuLoad()
         {
             decimal totalLoad = 0;
@@ -50,6 +56,9 @@ namespace Watcher.Services
             return NormalizePercent(totalLoad / processorCount);
         }
 
+        /// <summary>
+        /// Считывает загрузку оперативной памяти.
+        /// </summary>
         private static decimal ReadRamLoad()
         {
             using (ManagementObjectSearcher searcher =
@@ -72,6 +81,9 @@ namespace Watcher.Services
             return 0;
         }
 
+        /// <summary>
+        /// Считывает загрузку фиксированных дисков.
+        /// </summary>
         private static decimal ReadDiskLoad()
         {
             decimal totalSize = 0;
@@ -96,6 +108,10 @@ namespace Watcher.Services
             return NormalizePercent((totalSize - freeSize) * 100 / totalSize);
         }
 
+        /// <summary>
+        /// Ограничивает процентное значение диапазоном от 0 до 100.
+        /// </summary>
+        /// <param name="value">Исходное значение процента.</param>
         private static decimal NormalizePercent(decimal value)
         {
             if (value < 0)

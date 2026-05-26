@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TestCases>
+  <Case>
+    <Name>create_simple_note</Name>
+    <Operation>create</Operation>
+    <Content>Проверить gateway-01</Content>
+    <NewContent></NewContent>
+    <Expected>created</Expected>
+  </Case>
+  <Case>
+    <Name>list_user_notes</Name>
+    <Operation>list</Operation>
+    <Content>Логи балансировщика</Content>
+    <NewContent></NewContent>
+    <Expected>found</Expected>
+  </Case>
+  <Case>
+    <Name>update_note</Name>
+    <Operation>update</Operation>
+    <Content>Резерв БД</Content>
+    <NewContent>Резерв БД готов</NewContent>
+    <Expected>updated</Expected>
+  </Case>
+  <Case>
+    <Name>delete_existing_note</Name>
+    <Operation>delete_existing</Operation>
+    <Content>Нагрузка app-01</Content>
+    <NewContent></NewContent>
+    <Expected>deleted</Expected>
+  </Case>
+  <Case>
+    <Name>delete_missing_note</Name>
+    <Operation>delete_missing</Operation>
+    <Content></Content>
+    <NewContent></NewContent>
+    <Expected>not_found</Expected>
+  </Case>
+  <Case>
+    <Name>admin_reads_user_notes</Name>
+    <Operation>admin_read</Operation>
+    <Content>Проверить туннель</Content>
+    <NewContent></NewContent>
+    <Expected>found</Expected>
+  </Case>
+</TestCases>

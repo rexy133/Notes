@@ -10,11 +10,19 @@ namespace Watcher.Services
 
         private readonly string _connectionString;
 
+        /// <summary>
+        /// Создает отправитель метрик watcher-а.
+        /// </summary>
+        /// <param name="connectionString">Строка подключения к базе данных.</param>
         public WatcherMetricSender(string connectionString)
         {
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// Отправляет метрику устройства в базу данных.
+        /// </summary>
+        /// <param name="metric">Метрика watcher-а для сохранения.</param>
         public void Send(WatcherMetric metric)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))

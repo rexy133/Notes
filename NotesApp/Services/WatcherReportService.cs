@@ -5,6 +5,9 @@ using Npgsql;
 
 namespace NotesApp.Services
 {
+    /// <summary>
+    /// Читает устройства watcher-а и их метрики.
+    /// </summary>
     public class WatcherReportService
     {
         private const int _defaultMetricLimit = 10;
@@ -23,11 +26,19 @@ namespace NotesApp.Services
 
         private readonly DbConnectionProvider _connectionProvider;
 
+        /// <summary>
+        /// Создает сервис отчетов watcher-а.
+        /// </summary>
+        /// <param name="connectionProvider">Поставщик подключений к базе данных.</param>
         public WatcherReportService(DbConnectionProvider connectionProvider)
         {
             _connectionProvider = connectionProvider;
         }
 
+        /// <summary>
+        /// Возвращает список устройств watcher-а.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         public List<WatcherDeviceRecord> GetDevices(AppUser user)
         {
             CheckAccess(user);
@@ -47,11 +58,22 @@ namespace NotesApp.Services
             return devices;
         }
 
+        /// <summary>
+        /// Возвращает последние метрики устройства с лимитом по умолчанию.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
+        /// <param name="deviceId">Идентификатор устройства watcher-а.</param>
         public List<DeviceMetricRecord> GetMetrics(AppUser user, int deviceId)
         {
             return GetMetrics(user, deviceId, _defaultMetricLimit);
         }
 
+        /// <summary>
+        /// Возвращает последние метрики устройства.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
+        /// <param name="deviceId">Идентификатор устройства watcher-а.</param>
+        /// <param name="limit">Количество метрик для вывода.</param>
         public List<DeviceMetricRecord> GetMetrics(AppUser user, int deviceId, int limit)
         {
             CheckAccess(user);
@@ -86,6 +108,10 @@ namespace NotesApp.Services
             return metrics;
         }
 
+        /// <summary>
+        /// Преобразует строку результата запроса в устройство watcher-а.
+        /// </summary>
+        /// <param name="reader">Объект чтения данных PostgreSQL.</param>
         private static WatcherDeviceRecord ReadDevice(NpgsqlDataReader reader)
         {
             return new WatcherDeviceRecord
@@ -99,6 +125,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Преобразует строку результата запроса в метрику устройства.
+        /// </summary>
+        /// <param name="reader">Объект чтения данных PostgreSQL.</param>
         private static DeviceMetricRecord ReadMetric(NpgsqlDataReader reader)
         {
             return new DeviceMetricRecord
@@ -112,6 +142,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Проверяет доступ к командам watcher-а.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static void CheckAccess(AppUser user)
         {
             if (user == null || (user.RoleCode != "admin" && user.RoleCode != "analyst"))

@@ -21,11 +21,20 @@ namespace NotesApp.Services
 
         private readonly DbConnectionProvider _connectionProvider;
 
+        /// <summary>
+        /// Создает сервис чтения журнала действий.
+        /// </summary>
+        /// <param name="connectionProvider">Поставщик подключений к базе данных.</param>
         public AuditLogService(DbConnectionProvider connectionProvider)
         {
             _connectionProvider = connectionProvider;
         }
 
+        /// <summary>
+        /// Возвращает последние записи журнала действий.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
+        /// <param name="limit">Количество записей для вывода.</param>
         public List<AuditEventRecord> GetLastLogs(AppUser user, int limit)
         {
             CheckAdmin(user);
@@ -59,6 +68,10 @@ namespace NotesApp.Services
             return logs;
         }
 
+        /// <summary>
+        /// Преобразует строку результата запроса в запись журнала.
+        /// </summary>
+        /// <param name="reader">Объект чтения данных PostgreSQL.</param>
         private static AuditEventRecord ReadLog(NpgsqlDataReader reader)
         {
             return new AuditEventRecord
@@ -73,6 +86,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Проверяет права администратора.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static void CheckAdmin(AppUser user)
         {
             if (user == null || user.RoleCode != "admin")

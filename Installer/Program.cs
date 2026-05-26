@@ -10,6 +10,10 @@ namespace Installer
 {
     internal class Program
     {
+        /// <summary>
+        /// Точка входа установщика обновлений.
+        /// </summary>
+        /// <param name="args">Аргументы командной строки.</param>
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;

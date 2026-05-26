@@ -10,6 +10,10 @@ namespace Installer.Services
 {
     public class InstallArgumentParser
     {
+        /// <summary>
+        /// Разбирает аргументы запуска установщика.
+        /// </summary>
+        /// <param name="args">Аргументы командной строки.</param>
         public static InstallArguments Parse(string[] args)
         {
             if (args == null || args.Length < 3)

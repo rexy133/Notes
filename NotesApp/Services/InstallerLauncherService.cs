@@ -13,6 +13,10 @@ namespace NotesApp.Services
     {
         private const string _installerExeName = "Installer.exe";
 
+        /// <summary>
+        /// Запускает установщик для применения скачанного обновления.
+        /// </summary>
+        /// <param name="archivePath">Путь к zip-архиву обновления.</param>
         public void Launch(string archivePath)
         {
             if (string.IsNullOrWhiteSpace(archivePath) || !File.Exists(archivePath))
@@ -21,7 +25,9 @@ namespace NotesApp.Services
             }
 
             string installerPath = FindInstallerPath();
-            string applicationFolder = AppDomain.CurrentDomain.BaseDirectory;
+            string applicationFolder = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(
+                Path.DirectorySeparatorChar,
+                Path.AltDirectorySeparatorChar);
             string restartExeName = Path.GetFileName(Assembly.GetExecutingAssembly().Location);
 
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -35,6 +41,9 @@ namespace NotesApp.Services
             Process.Start(startInfo);
         }
 
+        /// <summary>
+        /// Ищет Installer.exe рядом с приложением или в папках сборки.
+        /// </summary>
         private static string FindInstallerPath()
         {
             List<string> paths = GetPossibleInstallerPaths();
@@ -50,6 +59,9 @@ namespace NotesApp.Services
             throw new FileNotFoundException("Installer.exe не найден. Сначала соберите проект Installer.");
         }
 
+        /// <summary>
+        /// Возвращает возможные пути к Installer.exe.
+        /// </summary>
         private static List<string> GetPossibleInstallerPaths()
         {
             string applicationFolder = AppDomain.CurrentDomain.BaseDirectory;
@@ -63,6 +75,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Оборачивает значение в кавычки для командной строки.
+        /// </summary>
+        /// <param name="value">Значение аргумента командной строки.</param>
         private static string Quote(string value)
         {
             return "\"" + value.Replace("\"", "\\\"") + "\"";

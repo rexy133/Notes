@@ -41,6 +41,10 @@ namespace NotesApp.Services
 
         private readonly DbConnectionProvider _connectionProvider;
 
+        /// <summary>
+        /// Создает сервис администрирования пользователей.
+        /// </summary>
+        /// <param name="connectionProvider">Поставщик подключений к базе данных.</param>
         public UserAdminService(DbConnectionProvider connectionProvider)
         {
             _connectionProvider = connectionProvider;
@@ -49,6 +53,10 @@ namespace NotesApp.Services
         /// <summary>
         /// Создает пользователя с выбранной ролью.
         /// </summary>
+        /// <param name="admin">Текущий администратор.</param>
+        /// <param name="username">Логин нового пользователя.</param>
+        /// <param name="password">Пароль нового пользователя.</param>
+        /// <param name="roleCode">Код роли нового пользователя.</param>
         public AuthResult CreateUser(AppUser admin, string username, string password, string roleCode)
         {
             CheckAdmin(admin);
@@ -105,6 +113,7 @@ namespace NotesApp.Services
         /// <summary>
         /// Возвращает список пользователей.
         /// </summary>
+        /// <param name="admin">Текущий администратор.</param>
         public List<AppUser> GetUsers(AppUser admin)
         {
             CheckAdmin(admin);
@@ -134,6 +143,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Блокирует пользователя.
         /// </summary>
+        /// <param name="admin">Текущий администратор.</param>
+        /// <param name="username">Логин пользователя.</param>
         public AuthResult BlockUser(AppUser admin, string username)
         {
             return SetBlocked(admin, username, true, "Пользователь заблокирован.", "block_user");
@@ -142,6 +153,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Разблокирует пользователя.
         /// </summary>
+        /// <param name="admin">Текущий администратор.</param>
+        /// <param name="username">Логин пользователя.</param>
         public AuthResult UnblockUser(AppUser admin, string username)
         {
             return SetBlocked(admin, username, false, "Пользователь разблокирован.", "unblock_user");
@@ -150,6 +163,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Удаляет пользователя.
         /// </summary>
+        /// <param name="admin">Текущий администратор.</param>
+        /// <param name="username">Логин пользователя.</param>
         public AuthResult DeleteUser(AppUser admin, string username)
         {
             CheckAdmin(admin);
@@ -187,6 +202,14 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Изменяет состояние блокировки пользователя.
+        /// </summary>
+        /// <param name="admin">Текущий администратор.</param>
+        /// <param name="username">Логин пользователя.</param>
+        /// <param name="blocked">Новое состояние блокировки.</param>
+        /// <param name="successMessage">Сообщение при успешном выполнении.</param>
+        /// <param name="actionCode">Код действия аудита.</param>
         private AuthResult SetBlocked(AppUser admin, string username, bool blocked, string successMessage, string actionCode)
         {
             CheckAdmin(admin);
@@ -225,6 +248,11 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет существование пользователя по логину.
+        /// </summary>
+        /// <param name="connection">Открытое подключение к базе данных.</param>
+        /// <param name="username">Логин пользователя.</param>
         private static bool UserExists(NpgsqlConnection connection, string username)
         {
             using (NpgsqlCommand command = new NpgsqlCommand(_checkUserSql, connection))
@@ -234,6 +262,11 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет существование роли по коду.
+        /// </summary>
+        /// <param name="connection">Открытое подключение к базе данных.</param>
+        /// <param name="roleCode">Код роли.</param>
         private static bool RoleExists(NpgsqlConnection connection, string roleCode)
         {
             using (NpgsqlCommand command = new NpgsqlCommand(_checkRoleSql, connection))
@@ -243,6 +276,14 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Сохраняет событие аудита администратора.
+        /// </summary>
+        /// <param name="connection">Открытое подключение к базе данных.</param>
+        /// <param name="admin">Текущий администратор.</param>
+        /// <param name="actionCode">Код действия.</param>
+        /// <param name="details">Описание события.</param>
+        /// <param name="objectName">Название объекта события.</param>
         private static void SaveAuditEvent(
             NpgsqlConnection connection,
             AppUser admin,
@@ -261,6 +302,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет права администратора.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static void CheckAdmin(AppUser user)
         {
             if (user == null || user.RoleCode != "admin")
@@ -269,6 +314,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Формирует успешный результат операции.
+        /// </summary>
+        /// <param name="message">Сообщение для пользователя.</param>
         private static AuthResult Success(string message)
         {
             return new AuthResult
@@ -278,6 +327,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Формирует неуспешный результат операции.
+        /// </summary>
+        /// <param name="message">Сообщение об ошибке.</param>
         private static AuthResult Fail(string message)
         {
             return new AuthResult

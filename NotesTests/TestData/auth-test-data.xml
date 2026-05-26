@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TestCases>
+  <Case>
+    <Name>valid_user</Name>
+    <Username>test_user</Username>
+    <Password>admin123</Password>
+    <ExpectedSuccess>true</ExpectedSuccess>
+    <ExpectedRole>user</ExpectedRole>
+  </Case>
+  <Case>
+    <Name>valid_admin</Name>
+    <Username>test_admin</Username>
+    <Password>admin123</Password>
+    <ExpectedSuccess>true</ExpectedSuccess>
+    <ExpectedRole>admin</ExpectedRole>
+  </Case>
+  <Case>
+    <Name>valid_analyst</Name>
+    <Username>test_analyst</Username>
+    <Password>admin123</Password>
+    <ExpectedSuccess>true</ExpectedSuccess>
+    <ExpectedRole>analyst</ExpectedRole>
+  </Case>
+  <Case>
+    <Name>wrong_password</Name>
+    <Username>test_user</Username>
+    <Password>wrong_password</Password>
+    <ExpectedSuccess>false</ExpectedSuccess>
+    <ExpectedRole></ExpectedRole>
+  </Case>
+  <Case>
+    <Name>unknown_user</Name>
+    <Username>missing_user</Username>
+    <Password>admin123</Password>
+    <ExpectedSuccess>false</ExpectedSuccess>
+    <ExpectedRole></ExpectedRole>
+  </Case>
+  <Case>
+    <Name>blocked_user</Name>
+    <Username>blocked_user</Username>
+    <Password>admin123</Password>
+    <ExpectedSuccess>false</ExpectedSuccess>
+    <ExpectedRole></ExpectedRole>
+  </Case>
+</TestCases>

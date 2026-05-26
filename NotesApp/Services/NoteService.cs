@@ -44,6 +44,10 @@ namespace NotesApp.Services
 
         private readonly DbConnectionProvider _connectionProvider;
 
+        /// <summary>
+        /// Создает сервис работы с заметками.
+        /// </summary>
+        /// <param name="connectionProvider">Поставщик подключений к базе данных.</param>
         public NoteService(DbConnectionProvider connectionProvider)
         {
             _connectionProvider = connectionProvider;
@@ -52,6 +56,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Добавляет новую заметку текущего пользователя.
         /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
+        /// <param name="content">Текст заметки.</param>
         public NoteRecord AddNote(AppUser user, string content)
         {
             CheckUser(user);
@@ -78,6 +84,7 @@ namespace NotesApp.Services
         /// <summary>
         /// Возвращает список заметок текущего пользователя.
         /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         public List<NoteRecord> GetNotes(AppUser user)
         {
             CheckUser(user);
@@ -104,6 +111,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Возвращает список заметок указанного пользователя для администратора.
         /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
+        /// <param name="username">Логин пользователя, чьи заметки нужно показать.</param>
         public List<NoteRecord> GetUserNotes(AppUser user, string username)
         {
             CheckAdmin(user);
@@ -138,6 +147,8 @@ namespace NotesApp.Services
         /// <summary>
         /// Удаляет заметку текущего пользователя.
         /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
+        /// <param name="noteId">Идентификатор заметки.</param>
         public bool DeleteNote(AppUser user, int noteId)
         {
             CheckUser(user);
@@ -155,6 +166,9 @@ namespace NotesApp.Services
         /// <summary>
         /// Изменяет заметку текущего пользователя.
         /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
+        /// <param name="noteId">Идентификатор заметки.</param>
+        /// <param name="content">Новый текст заметки.</param>
         public bool UpdateNote(AppUser user, int noteId, string content)
         {
             CheckUser(user);
@@ -171,6 +185,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Преобразует строку результата запроса в заметку.
+        /// </summary>
+        /// <param name="reader">Объект чтения данных PostgreSQL.</param>
         private static NoteRecord ReadNote(NpgsqlDataReader reader)
         {
             return new NoteRecord
@@ -183,6 +201,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Преобразует строку результата запроса в заметку с логином владельца.
+        /// </summary>
+        /// <param name="reader">Объект чтения данных PostgreSQL.</param>
         private static NoteRecord ReadNoteWithOwner(NpgsqlDataReader reader)
         {
             return new NoteRecord
@@ -196,6 +218,10 @@ namespace NotesApp.Services
             };
         }
 
+        /// <summary>
+        /// Проверяет, что пользователь авторизован.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static void CheckUser(AppUser user)
         {
             if (user == null)
@@ -204,6 +230,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет, что пользователь является администратором.
+        /// </summary>
+        /// <param name="user">Текущий пользователь приложения.</param>
         private static void CheckAdmin(AppUser user)
         {
             CheckUser(user);
@@ -214,6 +244,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет логин пользователя.
+        /// </summary>
+        /// <param name="username">Логин пользователя.</param>
         private static void CheckUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -222,6 +256,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет текст заметки.
+        /// </summary>
+        /// <param name="content">Текст заметки.</param>
         private static void CheckContent(string content)
         {
             if (string.IsNullOrWhiteSpace(content))
@@ -230,6 +268,11 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет существование пользователя по логину.
+        /// </summary>
+        /// <param name="connection">Открытое подключение к базе данных.</param>
+        /// <param name="username">Логин пользователя.</param>
         private static bool UserExists(NpgsqlConnection connection, string username)
         {
             using (NpgsqlCommand command = new NpgsqlCommand(_findUserIdByUsernameSql, connection))

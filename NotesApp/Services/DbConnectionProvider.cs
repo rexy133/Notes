@@ -25,12 +25,17 @@ namespace NotesApp.Services
         /// <summary>
         /// Открывает подключение с правами роли текущего пользователя.
         /// </summary>
+        /// <param name="roleCode">Код роли пользователя.</param>
         public NpgsqlConnection OpenConnectionForRole(string roleCode)
         {
             string connectionName = GetConnectionNameForRole(roleCode);
             return OpenConnection(connectionName);
         }
 
+        /// <summary>
+        /// Открывает подключение по имени строки подключения.
+        /// </summary>
+        /// <param name="connectionName">Имя строки подключения в App.config.</param>
         private static NpgsqlConnection OpenConnection(string connectionName)
         {
             string connectionString = ReadConnectionString(connectionName);
@@ -48,6 +53,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Читает строку подключения из конфигурации приложения.
+        /// </summary>
+        /// <param name="connectionName">Имя строки подключения в App.config.</param>
         private static string ReadConnectionString(string connectionName)
         {
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings[connectionName];
@@ -59,6 +68,10 @@ namespace NotesApp.Services
             return settings.ConnectionString;
         }
 
+        /// <summary>
+        /// Возвращает имя строки подключения для роли пользователя.
+        /// </summary>
+        /// <param name="roleCode">Код роли пользователя.</param>
         private static string GetConnectionNameForRole(string roleCode)
         {
             if (string.Equals(roleCode, "admin", StringComparison.OrdinalIgnoreCase))

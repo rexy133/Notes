@@ -16,6 +16,10 @@ namespace Installer.Services
     {
         private const int _waitDelayMilliseconds = 1000;
 
+        /// <summary>
+        /// Устанавливает обновление из zip-архива.
+        /// </summary>
+        /// <param name="arguments">Параметры установки обновления.</param>
         public void Install(InstallArguments arguments)
         {
             string applicationExePath = Path.Combine(arguments.ApplicationFolder, arguments.RestartExeName);
@@ -30,7 +34,7 @@ namespace Installer.Services
                 ZipFile.ExtractToDirectory(arguments.ArchivePath, unpackFolder);
 
                 Console.WriteLine("Замена файлов...");
-                CopyDirectory(unpackFolder, arguments.ApplicationFolder);
+                CopyDirectory(GetPackageRootFolder(unpackFolder), arguments.ApplicationFolder);
 
                 Console.WriteLine("Запуск приложения...");
                 StartApplication(applicationExePath);
@@ -41,6 +45,9 @@ namespace Installer.Services
             }
         }
 
+        /// <summary>
+        /// Создает временную папку для распаковки обновления.
+        /// </summary>
         private static string CreateTemporaryFolder()
         {
             string folder = Path.Combine(Path.GetTempPath(), "NotesUpdate_" + Guid.NewGuid().ToString("N"));
@@ -48,6 +55,10 @@ namespace Installer.Services
             return folder;
         }
 
+        /// <summary>
+        /// Ожидает завершения обновляемого приложения.
+        /// </summary>
+        /// <param name="applicationExePath">Путь к exe-файлу приложения.</param>
         private static void WaitForApplicationExit(string applicationExePath)
         {
             string processName = Path.GetFileNameWithoutExtension(applicationExePath);
@@ -58,6 +69,11 @@ namespace Installer.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет, запущено ли обновляемое приложение.
+        /// </summary>
+        /// <param name="processName">Имя процесса без расширения.</param>
+        /// <param name="applicationExePath">Путь к exe-файлу приложения.</param>
         private static bool IsApplicationRunning(string processName, string applicationExePath)
         {
             Process[] processes = Process.GetProcessesByName(processName);
@@ -85,6 +101,11 @@ namespace Installer.Services
             return false;
         }
 
+        /// <summary>
+        /// Копирует папку обновления в папку приложения.
+        /// </summary>
+        /// <param name="sourceFolder">Папка с распакованным обновлением.</param>
+        /// <param name="destinationFolder">Папка установленного приложения.</param>
         private static void CopyDirectory(string sourceFolder, string destinationFolder)
         {
             foreach (string folder in Directory.GetDirectories(sourceFolder, "*", SearchOption.AllDirectories))
@@ -108,18 +129,49 @@ namespace Installer.Services
             }
         }
 
+        /// <summary>
+        /// Определяет корневую папку пакета обновления.
+        /// </summary>
+        /// <param name="unpackFolder">Папка, в которую распакован архив.</param>
+        private static string GetPackageRootFolder(string unpackFolder)
+        {
+            string[] files = Directory.GetFiles(unpackFolder);
+            string[] folders = Directory.GetDirectories(unpackFolder);
+
+            if (files.Length == 0 && folders.Length == 1)
+            {
+                return folders[0];
+            }
+
+            return unpackFolder;
+        }
+
+        /// <summary>
+        /// Строит путь назначения для файла или папки обновления.
+        /// </summary>
+        /// <param name="sourceFolder">Корневая папка источника.</param>
+        /// <param name="destinationFolder">Корневая папка назначения.</param>
+        /// <param name="sourcePath">Исходный путь файла или папки.</param>
         private static string GetTargetPath(string sourceFolder, string destinationFolder, string sourcePath)
         {
             string relativePath = sourcePath.Substring(sourceFolder.Length).TrimStart(Path.DirectorySeparatorChar);
             return Path.Combine(destinationFolder, relativePath);
         }
 
+        /// <summary>
+        /// Проверяет, является ли файл текущим установщиком.
+        /// </summary>
+        /// <param name="targetFile">Путь к проверяемому файлу.</param>
         private static bool IsCurrentInstallerFile(string targetFile)
         {
             string currentInstallerPath = Assembly.GetExecutingAssembly().Location;
             return string.Equals(targetFile, currentInstallerPath, StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Запускает приложение после установки обновления.
+        /// </summary>
+        /// <param name="applicationExePath">Путь к exe-файлу приложения.</param>
         private static void StartApplication(string applicationExePath)
         {
             if (!File.Exists(applicationExePath))
@@ -136,6 +188,10 @@ namespace Installer.Services
             Process.Start(startInfo);
         }
 
+        /// <summary>
+        /// Удаляет временную папку обновления.
+        /// </summary>
+        /// <param name="folder">Путь к временной папке.</param>
         private static void DeleteTemporaryFolder(string folder)
         {
             try

@@ -11,6 +11,9 @@ namespace NotesApp.Services
     {
         private const string _settingsFileName = "notes.yml";
 
+        /// <summary>
+        /// Загружает настройки обновлений из notes.yml.
+        /// </summary>
         public UpdateSettings Load()
         {
             string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _settingsFileName);
@@ -65,6 +68,12 @@ namespace NotesApp.Services
             return settings;
         }
 
+        /// <summary>
+        /// Применяет одно значение из YAML к модели настроек.
+        /// </summary>
+        /// <param name="settings">Модель настроек обновлений.</param>
+        /// <param name="key">Название параметра.</param>
+        /// <param name="value">Значение параметра.</param>
         private static void ApplyValue(UpdateSettings settings, string key, string value)
         {
             if (key.Equals("owner", StringComparison.OrdinalIgnoreCase))
@@ -88,6 +97,10 @@ namespace NotesApp.Services
             }
         }
 
+        /// <summary>
+        /// Проверяет обязательные параметры настроек обновлений.
+        /// </summary>
+        /// <param name="settings">Модель настроек обновлений.</param>
         private static void Validate(UpdateSettings settings)
         {
             if (string.IsNullOrWhiteSpace(settings.Owner))

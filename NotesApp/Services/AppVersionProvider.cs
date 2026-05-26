@@ -8,6 +8,9 @@ namespace NotesApp.Services
     /// </summary>
     public class AppVersionProvider
     {
+        /// <summary>
+        /// Возвращает текущую версию сборки приложения.
+        /// </summary>
         public Version GetCurrentVersion()
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -20,12 +23,19 @@ namespace NotesApp.Services
             return Normalize(version);
         }
 
+        /// <summary>
+        /// Возвращает текущую версию приложения в текстовом виде.
+        /// </summary>
         public string GetCurrentVersionText()
         {
             Version version = GetCurrentVersion();
             return version.Major + "." + version.Minor + "." + version.Build;
         }
 
+        /// <summary>
+        /// Приводит версию к формату с заполненными Build и Revision.
+        /// </summary>
+        /// <param name="version">Исходная версия приложения.</param>
         public static Version Normalize(Version version)
         {
             int build = version.Build < 0 ? 0 : version.Build;
